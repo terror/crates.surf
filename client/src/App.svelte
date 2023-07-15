@@ -1,27 +1,32 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
+<script>
+  import _ from 'lodash';
 
-  let search = '', data = {};
+  let query = '', data = {};
 
-  const fetchResults = async (query) => {
-    if (query.trim() !== '') {
-      const response = await fetch(`/api/search?query=${query}`);
-      data = await response.json();
-      console.log(data);
-    } else {
-      data = {};
-    }
+  const search = async (query) => {
+    data = query.trim() !== '' ? await (await fetch(`/api/search?query=${query}`)).json() : {};
   };
 
-  $: fetchResults(search);
+  function highlight(text, query) {
+    if (!query || !text) return text;
+
+    return text
+      .split(new RegExp(`(${_.escapeRegExp(query)})`, 'gi'))
+      .map((part, i) =>
+        part.toLowerCase() === query.toLowerCase() ?
+          `<span class="bg-yellow-200">${part}</span>` :
+          part
+      ).join('');
+  }
+
+  $: search(query);
 </script>
 
 <main>
   <div class='m-5'>
     <p>crates.surf 🏄</p>
     <label for="search">Search for a crate</label>
-    <input class='bg-slate-100 p-1 rounded-lg' type="text" id="search" bind:value={search} placeholder='just'>
+    <input class='bg-slate-100 p-1 rounded-lg' type="text" id="search" bind:value={query} placeholder='just'>
     <div class='w-[50%]'>
     {#if data.response?.hits?.hits?.length}
       {#if data.time}
@@ -30,8 +35,8 @@
       <ul>
         {#each data.response.hits.hits as result (result._source.id)}
         <div class='bg-slate-100 p-1 my-1 rounded-lg'>
-          <li>{result._source.name}</li>
-          <li>{result._source.description}</li>
+          <li>{@html highlight(result._source.name, query)}</li>
+          <li>{@html highlight(result._source.description, query)}</li>
         </div>
         {/each}
       </ul>
