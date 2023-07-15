@@ -4,6 +4,8 @@ use super::*;
 pub(crate) struct Server {
   #[clap(long, default_value = "crates")]
   db_name: String,
+  #[clap(long)]
+  index: bool,
 }
 
 #[derive(Deserialize)]
@@ -46,24 +48,26 @@ impl Server {
     let (db, index) =
       (Db::connect(&self.db_name).await?, Arc::new(Index::open()?));
 
-    let consumer = Consumer::new(channel_b, db, index.clone());
+    if self.index {
+      let consumer = Consumer::new(channel_b, db, index.clone());
 
-    consumer.listen().await?;
+      consumer.listen().await?;
 
-    let publisher = Publisher::new(channel_a)?;
+      let publisher = Publisher::new(channel_a)?;
 
-    tokio::spawn(async move {
-      if let Err(err) = publisher.publish(PublishOptions::default()).await {
-        error!(?err, "Failed to publish");
-      }
-    });
+      tokio::spawn(async move {
+        if let Err(err) = publisher.publish(PublishOptions::default()).await {
+          error!(?err, "Failed to publish");
+        }
+      });
+    }
 
     info!("Listening on {}...", addr);
 
     axum::Server::bind(&addr)
       .serve(
         Router::new()
-          .route("/search", get(Self::search))
+          .route("/api/search", get(Self::search))
           .layer(Extension(index))
           .layer(
             CorsLayer::new()

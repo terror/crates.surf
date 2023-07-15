@@ -52,8 +52,6 @@ impl Consumer {
       let payload =
         serde_json::from_str::<Crate>(&std::str::from_utf8(&delivery.data)?)?;
 
-      info!("Received crate: {:?}", payload.name);
-
       self.index.ingest(payload).await?;
     }
 

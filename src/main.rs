@@ -44,7 +44,13 @@ use {
   serde::{Deserialize, Serialize},
   serde_json::{json, Value},
   sqlx::{migrate::MigrateDatabase, PgPool, Postgres},
-  std::{net::SocketAddr, process, str::FromStr, sync::Arc, time::Duration},
+  std::{
+    net::SocketAddr,
+    process,
+    str::FromStr,
+    sync::Arc,
+    time::{Duration, Instant},
+  },
   tower_http::cors::{Any, CorsLayer},
   tracing::{error, info, trace},
 };

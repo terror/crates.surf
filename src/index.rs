@@ -36,6 +36,12 @@ lazy_static! {
   });
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub(crate) struct SearchPayload {
+  response: Value,
+  time: f64,
+}
+
 #[derive(Debug)]
 pub(crate) struct Index {
   client: Elasticsearch,
@@ -76,8 +82,10 @@ impl Index {
     Ok(())
   }
 
-  pub(crate) async fn search(&self, query: &str) -> Result<serde_json::Value> {
+  pub(crate) async fn search(&self, query: &str) -> Result<SearchPayload> {
     info!("Received query: {query}");
+
+    let now = Instant::now();
 
     let response = self
       .client
@@ -94,6 +102,14 @@ impl Index {
       .await?
       .raise_for_status(StatusCode::OK)?;
 
-    Ok(response.json().await?)
+    let elapsed =
+      f64::trunc((now.elapsed().as_secs_f64() * 1000.0) * 100.0) / 100.0;
+
+    info!("Query took {elapsed}ms",);
+
+    Ok(SearchPayload {
+      time: elapsed,
+      response: response.json().await?,
+    })
   }
 }
