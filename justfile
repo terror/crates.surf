@@ -13,6 +13,7 @@ clippy:
 
 fmt:
   cargo fmt
+  prettier --write .
 
 fmt-check:
   cargo fmt --all -- --check
