@@ -2,8 +2,8 @@ use super::*;
 
 #[derive(Debug, Default)]
 pub(crate) struct PublishOptions {
-  pub(crate) page: Option<u64>,
-  pub(crate) page_size: Option<u64>,
+  page: Option<u64>,
+  page_size: Option<u64>,
 }
 
 pub(crate) struct Publisher {
@@ -45,17 +45,7 @@ impl Publisher {
       info!("Fetched crates: {:?}", names);
 
       for partial in result.crates {
-        self
-          .channel
-          .basic_publish(
-            "",
-            "crates",
-            BasicPublishOptions::default(),
-            serde_json::to_string(&partial)?.as_bytes(),
-            BasicProperties::default(),
-          )
-          .await?
-          .await?;
+        self.channel.publish("crates", partial).await?;
       }
 
       curr_page += 1;

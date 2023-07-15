@@ -1,6 +1,7 @@
 use {
   crate::{
     arguments::Arguments,
+    channel_ext::ChannelExt,
     consumer::Consumer,
     db::Db,
     elasticsearch_ext::ElasticsearchExt,
@@ -25,6 +26,7 @@ use {
       BasicAckOptions, BasicConsumeOptions, BasicPublishOptions,
       QueueDeclareOptions,
     },
+    publisher_confirm::Confirmation,
     types::FieldTable,
     BasicProperties, Channel, Connection, ConnectionProperties,
     Consumer as LapinConsumer,
@@ -38,6 +40,7 @@ use {
 };
 
 mod arguments;
+mod channel_ext;
 mod consumer;
 mod db;
 mod elasticsearch_ext;

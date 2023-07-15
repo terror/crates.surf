@@ -3,7 +3,7 @@ use super::*;
 #[derive(Debug)]
 pub(crate) struct Consumer {
   channel: Channel,
-  db: Db,
+  _db: Db,
   index: Index,
 }
 
@@ -12,7 +12,11 @@ impl Consumer {
   const TAG: &str = "crate_consumer";
 
   pub(crate) fn new(channel: Channel, db: Db, index: Index) -> Self {
-    Self { channel, db, index }
+    Self {
+      channel,
+      _db: db,
+      index,
+    }
   }
 
   pub(crate) async fn listen(self) -> Result {
@@ -47,6 +51,8 @@ impl Consumer {
         serde_json::from_str::<Crate>(&std::str::from_utf8(&delivery.data)?)?;
 
       info!("Received crate: {:?}", payload.name);
+
+      self.index.ingest(payload).await?;
     }
 
     Ok(())
