@@ -76,7 +76,7 @@ impl Index {
     Ok(())
   }
 
-  pub(crate) async fn _search(&self, query: &str) -> Result<serde_json::Value> {
+  pub(crate) async fn search(&self, query: &str) -> Result<serde_json::Value> {
     info!("Received query: {query}");
 
     let response = self

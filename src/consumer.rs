@@ -4,14 +4,14 @@ use super::*;
 pub(crate) struct Consumer {
   channel: Channel,
   _db: Db,
-  index: Index,
+  index: Arc<Index>,
 }
 
 impl Consumer {
   const QUEUE: &str = "crates";
   const TAG: &str = "crate_consumer";
 
-  pub(crate) fn new(channel: Channel, db: Db, index: Index) -> Self {
+  pub(crate) fn new(channel: Channel, db: Db, index: Arc<Index>) -> Self {
     Self {
       channel,
       _db: db,
@@ -20,6 +20,8 @@ impl Consumer {
   }
 
   pub(crate) async fn listen(self) -> Result {
+    trace!("Listening for messages...");
+
     let mut consumer = self
       .channel
       .basic_consume(

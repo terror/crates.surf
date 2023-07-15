@@ -50,6 +50,8 @@ impl Publisher {
 
       curr_page += 1;
 
+      query.set_page(curr_page);
+
       result = self.client.crates(query.clone()).await?;
     }
 

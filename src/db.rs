@@ -10,8 +10,9 @@ impl Db {
     let db_url =
       format!("postgresql://postgres:postgres@localhost:5432/{}", db_name);
 
-    (!Postgres::database_exists(&db_url).await?)
-      .then(|| async { Postgres::create_database(&db_url).await });
+    if !Postgres::database_exists(&db_url).await? {
+      Postgres::create_database(&db_url).await?;
+    }
 
     let options = sqlx::postgres::PgConnectOptions::from_str(&db_url)?;
 

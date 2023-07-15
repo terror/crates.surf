@@ -8,10 +8,18 @@ use {
     index::Index,
     publisher::{PublishOptions, Publisher},
     response_ext::ResponseExt,
+    server::Server,
+    subcommand::Subcommand,
   },
   anyhow::anyhow,
   async_trait::async_trait,
-  axum::http::StatusCode,
+  axum::{
+    extract::{Extension, Query},
+    http::StatusCode,
+    response::IntoResponse,
+    routing::get,
+    Json, Router,
+  },
   clap::Parser,
   crates_io_api::{AsyncClient, Crate, CratesQuery},
   elasticsearch::{
@@ -21,6 +29,7 @@ use {
     Elasticsearch, GetParts, IndexParts, SearchParts,
   },
   futures_lite::stream::StreamExt,
+  http::Method,
   lapin::{
     options::{
       BasicAckOptions, BasicConsumeOptions, BasicPublishOptions,
@@ -32,10 +41,11 @@ use {
     Consumer as LapinConsumer,
   },
   lazy_static::lazy_static,
-  serde::Serialize,
+  serde::{Deserialize, Serialize},
   serde_json::{json, Value},
   sqlx::{migrate::MigrateDatabase, PgPool, Postgres},
-  std::{process, str::FromStr, time::Duration},
+  std::{net::SocketAddr, process, str::FromStr, sync::Arc, time::Duration},
+  tower_http::cors::{Any, CorsLayer},
   tracing::{error, info, trace},
 };
 
@@ -47,6 +57,8 @@ mod elasticsearch_ext;
 mod index;
 mod publisher;
 mod response_ext;
+mod server;
+mod subcommand;
 
 type Result<T = (), E = anyhow::Error> = std::result::Result<T, E>;
 
