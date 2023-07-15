@@ -50,3 +50,5 @@ networks:
 volumes:
   db:
     driver: local
+  elasticsearch-data:
+    driver: local
