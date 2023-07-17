@@ -93,8 +93,10 @@ impl Index {
         Index::INDEX_ID,
         json!({
           "query": {
-            "query_string": {
-              "query": query
+            "multi_match": {
+              "query": query,
+              "fields": ["*"],
+              "fuzziness": "AUTO"
             }
           }
         }),

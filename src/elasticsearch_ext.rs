@@ -93,6 +93,9 @@ impl ElasticsearchExt for Elasticsearch {
     Ok(
       self
         .search(SearchParts::Index(&[index_id]))
+        .track_total_hits(true)
+        .from(0)
+        .size(100)
         .body(body)
         .send()
         .await?,

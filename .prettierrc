@@ -1,8 +1,13 @@
 {
   "jsxSingleQuote": true,
+  "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
   "proseWrap": "always",
   "semi": true,
   "singleQuote": true,
+  "svelteAllowShorthand": false,
+  "svelteIndentScriptAndStyle": false,
+  "svelteSortOrder": "options-styles-scripts-markup",
+  "svelteStrictMode": true,
   "tabWidth": 2,
   "trailingComma": "es5"
 }

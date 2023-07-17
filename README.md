@@ -3,6 +3,8 @@
 **crates.surf** is a full-text/semantic search engine for all 100k+ crates in
 the rust ecosystem.
 
+![](https://github.com/terror/crates.surf/assets/31192478/2cc6f1e1-9190-48f6-bd3b-0cb9427dbd0a)
+
 ### Development
 
 You'll need [docker](https://www.docker.com/),
