@@ -13,7 +13,7 @@ pub(crate) struct Publisher {
 
 impl Publisher {
   const PAGE_SIZE: u64 = 100;
-  const USER_AGENT: &str = "crates.surf (admin@crates.surf)";
+  const USER_AGENT: &'static str = "crates.surf (admin@crates.surf)";
 
   pub(crate) fn new(channel: Channel) -> Result<Self> {
     Ok(Self {

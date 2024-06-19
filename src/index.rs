@@ -48,7 +48,7 @@ pub(crate) struct Index {
 }
 
 impl Index {
-  const INDEX_ID: &str = "crate-index";
+  const INDEX_ID: &'static str = "crate-index";
 
   pub(crate) fn open() -> Result<Self> {
     Ok(Self {

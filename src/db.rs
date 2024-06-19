@@ -20,7 +20,7 @@ impl Db {
 
     info!("Connected to PostgreSQL");
 
-    sqlx::migrate!("./migrations").run(&pool).await?;
+    // sqlx::migrate!("./migrations").run(&pool).await?;
 
     Ok(Self { _pool: pool })
   }

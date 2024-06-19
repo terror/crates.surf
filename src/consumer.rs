@@ -8,8 +8,8 @@ pub(crate) struct Consumer {
 }
 
 impl Consumer {
-  const QUEUE: &str = "crates";
-  const TAG: &str = "crate_consumer";
+  const QUEUE: &'static str = "crates";
+  const TAG: &'static str = "crate_consumer";
 
   pub(crate) fn new(channel: Channel, db: Db, index: Arc<Index>) -> Self {
     Self {
